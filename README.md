@@ -16,52 +16,52 @@ This pipeline is designed to accurately filter, map, and identify piRNAs while m
 - Linux / Unix environment
 - **Conda / Mamba** (for automatic dependency resolution)
 - **Nextflow** (>= 22.10.x)
-- **SRA-Toolkit** (`fasterq-dump`) (Optional, for downloading test datasets)
 
-## Setup and Installation
+## Data Preparation (Inputs)
+To run this pipeline on your own biological samples, you must prepare the following input files:
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/project_piwirnas.git
-   cd project_piwirnas
-   ```
+### 1. Biological Data (Mandatory)
+- **Raw reads:** Small RNA-seq data in FASTQ format (`.fastq` or `.fastq.gz`).
 
-2. **Download databases and build indexes:**
-   Run the automated setup script. This will download the mouse genome (mm39), miRBase, Rfam, piRBase, and build the required Bowtie memory-optimized indexes.
-   ```bash
-   nohup ./download_and_setup.sh > setup.log 2>&1 &
-   ```
-   *Note: This step requires a stable internet connection and will download several gigabytes of data.*
+### 2. Reference Genome Index (Mandatory)
+- Download the FASTA file for your organism's reference genome (e.g., `mm39` for mouse).
+- Build the Bowtie 1 index: `bowtie-build genome.fa genome_index`
+
+### 3. Negative Filter Index (Mandatory)
+- Download structural RNAs (rRNA, tRNA, snRNA) from **Rfam** and microRNAs from **miRBase**.
+- Concatenate them into a single FASTA file and build the Bowtie 1 index: `bowtie-build trash_rna.fa negative_filter_index`
+
+### 4. piRBase Database (Optional)
+- Download the known piRNAs FASTA file for your organism from [piRBase](http://bigdata.ibp.ac.cn/piRBase/). If provided, the pipeline will classify discoveries as *Known* vs *Novel*.
 
 ## Execution
+
 The pipeline is orchestrated by Nextflow, which automatically handles parallelization, environment isolation (via Conda), and file staging.
 
-To run the pipeline on the test datasets downloaded during setup:
-```bash
-nextflow run main.nf
-```
+To execute the pipeline, point it to your prepared inputs using the terminal:
 
-To run the pipeline on your own FASTQ data, modify the `reads` parameter in `nextflow.config`:
-```groovy
-params {
-    reads = "/path/to/your/data/*.fastq"
-    // ...
-}
-```
-
-### Advanced: Standalone Bash Pipeline
-If you do not wish to use Nextflow, a standalone Bash script is provided that executes the pipeline sequentially on a single FASTQ file:
 ```bash
-./pirna_pipeline.sh <input_fastq> <output_dir> <threads>
+nextflow run main.nf \
+  -profile conda \
+  --reads "path/to/data/*.fastq.gz" \
+  --bowtie_index_dir "path/to/indexes/" \
+  --genome_prefix "genome_index" \
+  --rfam_mirbase_prefix "negative_filter_index" \
+  --pirbase "path/to/pirbase.fa" \
+  --adapter "TGGAATTCTCGGGTGCCAAGG" \
+  --threads 8
 ```
 
 ## Output Structure
 The `results/` directory will contain organized outputs per sample:
-- `01_fastqc_raw/` & `03_fastqc_trimmed/`: HTML quality reports.
-- `06_final_candidates/`: Filtered and mapped sequences in FASTA format.
+- `01_fastqc_raw/` & `03_fastqc_trimmed/`: Individual HTML quality reports.
+- `06_final_candidates/`: Filtered and mapped sequences in FASTA format (Putative piRNAs).
 - `07_signatures/`: Text reports detailing 1U/10A biases and Ping-Pong distances.
 - `08_clusters/`: BED files of identified piRNA clusters and statistical reports.
 - `09_pirbase_comparison/`: Text reports comparing your candidates against known piRNAs.
+
+## Automated CI/CD
+This repository includes a GitHub Actions workflow (`.github/workflows/ci.yml`) that automatically tests the integrity of the pipeline using synthetically generated data on every push to the `main` branch.
 
 ## License
 MIT License.
