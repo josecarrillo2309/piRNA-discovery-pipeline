@@ -1,7 +1,7 @@
 process MULTIQC {
     publishDir "${params.outdir}/MultiQC", mode: 'copy'
 
-    conda "bioconda::multiqc=1.15"
+    conda "bioconda::multiqc=1.15 conda-forge::python=3.10"
     container "quay.io/biocontainers/multiqc:1.15--pyhdfd78af_0"
 
     input:
