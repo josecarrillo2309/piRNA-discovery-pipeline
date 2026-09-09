@@ -1,0 +1,54 @@
+name: piRNA Discovery Pipeline CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    name: Run Pipeline with Synthetic Data
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out pipeline code
+        uses: actions/checkout@v3
+
+      - name: Install Conda (Miniconda)
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: "3.10"
+
+      - name: Install Nextflow and Bowtie 1
+        run: |
+          wget -qO- https://get.nextflow.io | bash
+          sudo mv nextflow /usr/local/bin/
+          # Install bowtie 1 for index generation
+          sudo apt-get update
+          sudo apt-get install -y bowtie
+
+      - name: Generate Synthetic Test Data
+        run: |
+          chmod +x .github/scripts/generate_dummy_data.sh
+          ./.github/scripts/generate_dummy_data.sh
+
+      - name: Run Nextflow Pipeline (Conda Profile)
+        run: |
+          nextflow run main.nf \
+            -profile conda \
+            --reads ".github_test_data/reads/*.fastq" \
+            --outdir "ci_results" \
+            --bowtie_index_dir ".github_test_data/reference" \
+            --genome_prefix "dummy_genome" \
+            --rfam_mirbase_prefix "dummy_rfam" \
+            --pirbase ".github_test_data/reference/dummy_pirbase.fa.gz" \
+            --threads 2
+
+      - name: Verify Execution
+        run: |
+          echo "Pipeline finished successfully."
+          # Assert MultiQC report exists
+          ls -l ci_results/MultiQC/multiqc_report.html
+          echo "All tests passed!"

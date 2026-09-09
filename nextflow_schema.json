@@ -1,0 +1,82 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/yourusername/project_piwirnas/master/nextflow_schema.json",
+    "title": "piRNA Discovery Pipeline Parameters",
+    "description": "Validation schema for the piRNA Discovery Pipeline",
+    "type": "object",
+    "definitions": {
+        "input_output_options": {
+            "title": "Input/output options",
+            "type": "object",
+            "description": "Define where the pipeline should find input data and save output data.",
+            "properties": {
+                "reads": {
+                    "type": "string",
+                    "description": "Path to input data (must be surrounded with quotes)",
+                    "default": "test_datasets/*.fastq"
+                },
+                "outdir": {
+                    "type": "string",
+                    "description": "The output directory where the results will be saved",
+                    "default": "results"
+                }
+            },
+            "required": ["reads", "outdir"]
+        },
+        "reference_genome_options": {
+            "title": "Reference genome options",
+            "type": "object",
+            "description": "Options for reference genomes and databases.",
+            "properties": {
+                "bowtie_index_dir": {
+                    "type": "string",
+                    "description": "Path to the directory containing Bowtie indexes",
+                    "default": "reference_data/bowtie_indexes"
+                },
+                "rfam_mirbase_prefix": {
+                    "type": "string",
+                    "description": "Prefix for the Rfam/miRBase bowtie index",
+                    "default": "mouse_rfam_mirbase"
+                },
+                "genome_prefix": {
+                    "type": "string",
+                    "description": "Prefix for the target genome bowtie index",
+                    "default": "mm39"
+                },
+                "pirbase": {
+                    "type": "string",
+                    "description": "Path to the piRBase FASTA file",
+                    "default": "reference_data/piR_mouse.fa.gz"
+                }
+            }
+        },
+        "execution_options": {
+            "title": "Execution options",
+            "type": "object",
+            "description": "Options for how the pipeline should be executed.",
+            "properties": {
+                "adapter": {
+                    "type": "string",
+                    "description": "Adapter sequence for cutadapt trimming",
+                    "default": "TGGAATTCTCGGGTGCCAAGG"
+                },
+                "threads": {
+                    "type": "integer",
+                    "description": "Number of threads to use per process",
+                    "default": 4
+                }
+            }
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/reference_genome_options"
+        },
+        {
+            "$ref": "#/definitions/execution_options"
+        }
+    ]
+}

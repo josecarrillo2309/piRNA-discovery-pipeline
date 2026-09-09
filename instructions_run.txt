@@ -1,0 +1,2 @@
+nohup ./download_and_setup.sh > setup_log.txt 2>&1 &
+nohup nextflow run main.nf -resume > pipeline_log.txt 2>&1 &

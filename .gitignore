@@ -1,0 +1,39 @@
+# Nextflow caching and execution files
+work/
+.nextflow/
+.nextflow.log*
+.nextflow.pid*
+
+# Data and output directories (preventing huge uploads)
+reference_data/
+test_datasets/
+results/
+.github_test_data/
+ci_results/
+
+# Sequencing, mapping, and index files
+*.fastq
+*.fq
+*.fastq.gz
+*.fq.gz
+*.fa
+*.fasta
+*.fa.gz
+*.fasta.gz
+*.sam
+*.bam
+*.bai
+*.ebwt
+*.bed
+
+# Logs and large text reports
+*.log
+*report*.txt
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS generated files
+.DS_Store
+Thumbs.db
