@@ -1,6 +1,6 @@
 process PINGPONG_SIG {
     tag "$sample_id"
-    publishDir "${params.outdir}/${sample_id}/07_signatures", mode: 'copy'
+    publishDir "${params.outdir}/07_signatures", mode: 'copy'
 
     conda "conda-forge::python=3.10"
     container "quay.io/biocontainers/python:3.10"

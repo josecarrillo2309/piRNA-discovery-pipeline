@@ -1,6 +1,6 @@
 process FILTER_NCRS {
     tag "$sample_id"
-    publishDir "${params.outdir}/${sample_id}/04_filtered_non_pirna", mode: 'copy'
+    publishDir "${params.outdir}/04_filtered_non_pirna", mode: 'copy'
 
     conda "bioconda::bowtie=1.3.1"
     container "quay.io/biocontainers/bowtie:1.3.1--py310h4b830d6_3"

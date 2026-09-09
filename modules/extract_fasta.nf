@@ -1,6 +1,6 @@
 process EXTRACT_FASTA {
     tag "$sample_id"
-    publishDir "${params.outdir}/${sample_id}/06_final_candidates", mode: 'copy'
+    publishDir "${params.outdir}/06_final_candidates", mode: 'copy'
 
     conda "bioconda::samtools=1.18"
     container "quay.io/biocontainers/samtools:1.18--h50ea8bc_1"

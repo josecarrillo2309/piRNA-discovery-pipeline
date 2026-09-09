@@ -1,6 +1,6 @@
 process COMPARE_NOVEL {
     tag "$sample_id"
-    publishDir "${params.outdir}/${sample_id}/09_pirbase_comparison", mode: 'copy'
+    publishDir "${params.outdir}/09_pirbase_comparison", mode: 'copy'
 
     conda "conda-forge::python=3.10"
     container "quay.io/biocontainers/python:3.10"

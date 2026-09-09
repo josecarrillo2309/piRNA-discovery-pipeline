@@ -1,6 +1,6 @@
 process PIRNA_CLUSTERS {
     tag "$sample_id"
-    publishDir "${params.outdir}/${sample_id}/08_clusters", mode: 'copy'
+    publishDir "${params.outdir}/08_clusters", mode: 'copy'
 
     conda "conda-forge::python=3.10"
     container "quay.io/biocontainers/python:3.10"

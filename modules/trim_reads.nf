@@ -1,6 +1,6 @@
 process TRIM_READS {
     tag "$sample_id"
-    publishDir "${params.outdir}/${sample_id}/02_trimmed_filtered", mode: 'copy'
+    publishDir "${params.outdir}/02_trimmed_filtered", mode: 'copy'
     
     conda "bioconda::cutadapt=4.9"
     container "quay.io/biocontainers/cutadapt:4.9--py310h0941dc4_0"

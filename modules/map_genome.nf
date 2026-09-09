@@ -1,6 +1,6 @@
 process MAP_GENOME {
     tag "$sample_id"
-    publishDir "${params.outdir}/${sample_id}/05_genome_mapping", mode: 'copy'
+    publishDir "${params.outdir}/05_genome_mapping", mode: 'copy'
 
     conda "bioconda::bowtie=1.3.1"
     container "quay.io/biocontainers/bowtie:1.3.1--py310h4b830d6_3"
