@@ -15,6 +15,6 @@ process MAP_GENOME {
 
     script:
     """
-    bowtie -S -p ${task.cpus} -v 1 -m 50 -a --best --strata ${index_dir}/${params.genome_prefix} $reads > ${sample_id}_mapped_pirnas.sam 2> ${sample_id}_bowtie_map.log
+    bowtie -S -p ${task.cpus} -v 1 -m 50 -a --best --strata ${index_dir}/${params.genome_prefix} $reads > ${sample_id}_mapped_pirnas.sam 2> ${sample_id}_bowtie_map.log || { cat ${sample_id}_bowtie_map.log; exit 1; }
     """
 }

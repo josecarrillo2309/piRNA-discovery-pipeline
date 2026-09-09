@@ -15,7 +15,7 @@ process FILTER_NCRS {
 
     script:
     """
-    bowtie -S -p ${task.cpus} -v 1 --best --strata --un ${sample_id}_putative_pirnas.fastq ${index_dir}/${params.rfam_mirbase_prefix} $reads > discarded.sam 2> ${sample_id}_bowtie_filter.log
+    bowtie -S -p ${task.cpus} -v 1 --un ${sample_id}_putative_pirnas.fastq ${index_dir}/${params.rfam_mirbase_prefix} $reads > discarded.sam 2> ${sample_id}_bowtie_filter.log || { cat ${sample_id}_bowtie_filter.log; exit 1; }
     rm discarded.sam
     """
 }
