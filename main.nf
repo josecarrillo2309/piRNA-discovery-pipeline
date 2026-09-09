@@ -28,8 +28,8 @@ workflow {
     FASTQC_TRIMMED(trimmed_ch.trimmed)
 
     // Filtering & Mapping
-    putative_ch = FILTER_NCRS(trimmed_ch.trimmed, params.bowtie_index_dir)
-    mapped_sam_ch = MAP_GENOME(putative_ch.putative_reads, params.bowtie_index_dir)
+    putative_ch = FILTER_NCRS(trimmed_ch.trimmed, file(params.bowtie_index_dir))
+    mapped_sam_ch = MAP_GENOME(putative_ch.putative_reads, file(params.bowtie_index_dir))
     
     // Formatting
     bam_fasta_ch = EXTRACT_FASTA(mapped_sam_ch.sam)
@@ -38,7 +38,7 @@ workflow {
     SIGNATURE_1U10A(bam_fasta_ch)
     
     if (file(params.pirbase).exists()) {
-        COMPARE_NOVEL(bam_fasta_ch, params.pirbase)
+        COMPARE_NOVEL(bam_fasta_ch, file(params.pirbase))
     } else {
         log.warn "piRBase file not found at ${params.pirbase}. Skipping known vs novel comparison."
     }
